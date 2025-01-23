@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Choice, getRandomChoice, determineWinner } from '../utils/gamelogic';
+import { Choice, getRandomChoice, determineWinner } from '../../utils/gamelogic';
 
-const Game = () => {
+export function Game() {
   const [playerChoice, setPlayerChoice] = useState<Choice | null>(null);
   const [computerChoice, setComputerChoice] = useState<Choice | null>(null);
   const [result, setResult] = useState<string | null>(null);
@@ -31,5 +31,3 @@ const Game = () => {
     </div>
   );
 };
-
-export default Game;

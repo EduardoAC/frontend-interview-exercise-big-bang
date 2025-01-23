@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const Scoreboard = () => {
+export function Scoreboard() {
   const [playerScore, setPlayerScore] = useState(0);
   const [computerScore, setComputerScore] = useState(0);
 
@@ -27,5 +27,3 @@ const Scoreboard = () => {
     </div>
   );
 };
-
-export default Scoreboard;

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-interface Props {
+interface UsernameFormProps {
   setUsername: (username: string) => void;
 }
 
-const UsernameForm: React.FC<Props> = ({ setUsername }) => {
+export function UsernameForm({ setUsername }: UsernameFormProps) {
   const [name, setName] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,5 +26,3 @@ const UsernameForm: React.FC<Props> = ({ setUsername }) => {
     </form>
   );
 };
-
-export default UsernameForm;
