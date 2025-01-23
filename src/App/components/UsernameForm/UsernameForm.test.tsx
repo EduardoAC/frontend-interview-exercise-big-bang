@@ -29,7 +29,7 @@ describe('UsernameForm Component', () => {
     expect(onSubmit).toHaveBeenCalledWith('JohnDoe');
   });
 
-  it('does not call onSubmit with empty input when form is submitted', () => {
+  it('display required field when submitting empty', () => {
     const onSubmit = vi.fn();
     render(<UsernameForm onSubmit={onSubmit} />);
 
@@ -39,6 +39,25 @@ describe('UsernameForm Component', () => {
     const button = screen.getByText('Add player');
     fireEvent.click(button);
 
+    expect(screen.getByText('Player name is required.')).toBeInTheDocument();
     expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it('resets input value after adding a player', () => {
+    const onSubmit = vi.fn();
+    render(<UsernameForm onSubmit={onSubmit} />);
+  
+    const input = screen.getByLabelText('Enter your name:');
+    fireEvent.change(input, { target: { value: 'Player' } });
+  
+    const button = screen.getByText('Add player');
+    fireEvent.click(button);
+  
+    // Ensure onSubmit is called with the correct value
+    expect(onSubmit).toHaveBeenCalledWith('Player');
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+  
+    // Check that the input field has been reset
+    expect((input as HTMLInputElement).value).toBe('');
   });
 });
