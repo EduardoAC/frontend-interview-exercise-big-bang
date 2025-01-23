@@ -25,7 +25,7 @@ export function determineWinner(choices: PlayerChoices): string | null {
   const choice2 = choices[player2];
 
   if (choice1 === choice2) {
-    return null; // It's a tie
+    return "tie"; // It's a tie
   }
 
   if (outcomes[choice1].winsAgainst.includes(choice2)) {

@@ -5,9 +5,12 @@ type Scoreboard = Record<string, number>
 // Define a type for the score context
 interface ScoreContextType {
   scoreboard: Scoreboard;
+  isNewGame: boolean;
+  numberOfPlayers: number;
   addPlayer: (name: string) => void;
   incrementScore: (player: string) => void;
   resetScore: () => void;
+  createNewGame: () => void;
 }
 
 // Create the context with default values
@@ -15,7 +18,10 @@ const ScoreContext = createContext<ScoreContextType | undefined>(undefined);
 
 // Provider component to wrap around the app
 export const ScoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [scoreboard, updateScoreboard] = useState<Scoreboard>(JSON.parse(sessionStorage.getItem('scoreboard') || "{}") as Scoreboard);
+  const scoreboardSession = sessionStorage.getItem('scoreboard')
+  const [isNewGame, setNewGame] = useState(!scoreboardSession)
+  const [scoreboard, updateScoreboard] = useState<Scoreboard>(JSON.parse(scoreboardSession || "{}") as Scoreboard);
+  const numberOfPlayers = Object.keys(scoreboard).length;
 
   // Save the scores in sessionStorage
   const saveScoresToSessionStorage = () => {
@@ -24,6 +30,9 @@ export const ScoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const addPlayer = (name: string) => {
     updateScoreboard({...scoreboard, [name]: 0 })
+    if(numberOfPlayers === 1) {
+      setNewGame(false);
+    }
   }
 
   const incrementScore = (playerName: string) => {
@@ -42,13 +51,18 @@ export const ScoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     updateScoreboard(resetedScore);
   }
 
+  const createNewGame = () => {
+    sessionStorage.removeItem('scoreboard')
+    updateScoreboard({});
+    setNewGame(true);
+  }
   // Sync the state to sessionStorage whenever scores change
   React.useEffect(() => {
     saveScoresToSessionStorage();
   }, [scoreboard]);
 
   return (
-    <ScoreContext.Provider value={{ scoreboard, addPlayer, incrementScore, resetScore }}>
+    <ScoreContext.Provider value={{ scoreboard, addPlayer, incrementScore, resetScore, createNewGame, numberOfPlayers, isNewGame }}>
       {children}
     </ScoreContext.Provider>
   );
