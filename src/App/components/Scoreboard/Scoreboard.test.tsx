@@ -8,12 +8,12 @@ describe('Scoreboard Component', () => {
     sessionStorage.clear(); // Clear sessionStorage before each test
   });
 
-  it('displays initial scores as 0', () => {
+  it.only('displays initial scores as 0', () => {
     const scoreboard = {'teo': 0, 'juan': 0}
     sessionStorage.setItem('scoreboard', JSON.stringify(scoreboard));
     renderWithScore(<Scoreboard />);
-    expect(screen.getByText('teo: 0')).toBeInTheDocument();
-    expect(screen.getByText('juan: 0')).toBeInTheDocument();
+    expect(screen.getByTestId('score-teo').textContent).toBe("teo0");
+    expect(screen.getByTestId('score-juan').textContent).toBe("juan0");
   });
 
   it('displays scores from sessionStorage', () => {
@@ -21,7 +21,7 @@ describe('Scoreboard Component', () => {
     sessionStorage.setItem('scoreboard', JSON.stringify(scoreboard));
 
     renderWithScore(<Scoreboard />);
-    expect(screen.getByText('teo: 5')).toBeInTheDocument();
-    expect(screen.getByText('juan: 3')).toBeInTheDocument();
+    expect(screen.getByTestId('score-teo').textContent).toBe("teo5");
+    expect(screen.getByTestId('score-juan').textContent).toBe("juan3");
   });
 });

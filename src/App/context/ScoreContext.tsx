@@ -18,10 +18,10 @@ const ScoreContext = createContext<ScoreContextType | undefined>(undefined);
 
 // Provider component to wrap around the app
 export const ScoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const scoreboardSession = sessionStorage.getItem('scoreboard')
-  const [isNewGame, setNewGame] = useState(!scoreboardSession)
-  const [scoreboard, updateScoreboard] = useState<Scoreboard>(JSON.parse(scoreboardSession || "{}") as Scoreboard);
-  const numberOfPlayers = Object.keys(scoreboard).length;
+  const scoreboardSession = JSON.parse(sessionStorage.getItem('scoreboard') || "{}") as Scoreboard;
+  const [isNewGame, setNewGame] = useState(Object.keys(scoreboardSession).length < 2)
+  const [numberOfPlayers, updateNumberOfPlayers] = useState(Object.keys(scoreboardSession).length)
+  const [scoreboard, updateScoreboard] = useState<Scoreboard>(scoreboardSession);
 
   // Save the scores in sessionStorage
   const saveScoresToSessionStorage = () => {
@@ -30,6 +30,7 @@ export const ScoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const addPlayer = (name: string) => {
     updateScoreboard({...scoreboard, [name]: 0 })
+    updateNumberOfPlayers(numberOfPlayers + 1);
     if(numberOfPlayers === 1) {
       setNewGame(false);
     }
@@ -54,6 +55,7 @@ export const ScoreProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const createNewGame = () => {
     sessionStorage.removeItem('scoreboard')
     updateScoreboard({});
+    updateNumberOfPlayers(0)
     setNewGame(true);
   }
   // Sync the state to sessionStorage whenever scores change

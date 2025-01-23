@@ -6,7 +6,7 @@ describe('UsernameForm Component', () => {
   it('renders input and submit button', () => {
     render(<UsernameForm onSubmit={vi.fn()} />);
     expect(screen.getByLabelText('Enter your name:')).toBeInTheDocument();
-    expect(screen.getByText('Start')).toBeInTheDocument();
+    expect(screen.getByText('Add player')).toBeInTheDocument();
   });
 
   it('can type a username into the input field', () => {
@@ -23,7 +23,7 @@ describe('UsernameForm Component', () => {
     const input = screen.getByLabelText('Enter your name:');
     fireEvent.change(input, { target: { value: 'JohnDoe' } });
 
-    const button = screen.getByText('Start');
+    const button = screen.getByText('Add player');
     fireEvent.click(button);
 
     expect(onSubmit).toHaveBeenCalledWith('JohnDoe');
@@ -36,7 +36,7 @@ describe('UsernameForm Component', () => {
     const input = screen.getByLabelText('Enter your name:');
     fireEvent.change(input, { target: { value: '' } });
 
-    const button = screen.getByText('Start');
+    const button = screen.getByText('Add player');
     fireEvent.click(button);
 
     expect(onSubmit).not.toHaveBeenCalled();

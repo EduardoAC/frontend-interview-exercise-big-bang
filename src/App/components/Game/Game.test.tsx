@@ -13,22 +13,22 @@ describe('Game Component', () => {
 
   it.each(['teo', 'juan'])('renders all choice buttons', (playerUsername) => {
     const choices = ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'];
-    const section = within(screen.getByText(`Make your choice ${playerUsername}`).closest("div")!)
+    const section = within(screen.getByText(`Make your choice, ${playerUsername}`).closest("div")!)
     choices.forEach((choice) => {
       expect(section.getByText(choice)).toBeInTheDocument();
     });
   });
 
   it('displays the result after player and computer make choices', () => {
-    const teoSection = within(screen.getByText(`Make your choice teo`).closest("div")!)
+    const teoSection = within(screen.getByText(`Make your choice, teo`).closest("div")!)
     const teoScissorsButton = teoSection.getByText('Scissors');
     fireEvent.click(teoScissorsButton);
-    const juanSection = within(screen.getByText(`Make your choice juan`).closest("div")!)
+    const juanSection = within(screen.getByText(`Make your choice, juan`).closest("div")!)
     const juanRockButton = juanSection.getByText('Rock');
     fireEvent.click(juanRockButton);
 
-    expect(screen.getByText('teo chose: Scissors')).toBeInTheDocument();
-    expect(screen.getByText('juan chose: Rock')).toBeInTheDocument();
+    expect(screen.getByText('teo chose:').textContent).toBe("teo chose: Scissors");
+    expect(screen.getByText('juan chose:').textContent).toBe("juan chose: Rock");
 
     const getResultButton = screen.getByText('Get result');
     fireEvent.click(getResultButton);
@@ -38,15 +38,15 @@ describe('Game Component', () => {
   });
 
   it('displays a tie if both player and computer choose the same', () => {
-    const teoSection = within(screen.getByText(`Make your choice teo`).closest("div")!)
+    const teoSection = within(screen.getByText(`Make your choice, teo`).closest("div")!)
     const teoRockButton = teoSection.getByText('Rock');
     fireEvent.click(teoRockButton);
-    const juanSection = within(screen.getByText(`Make your choice juan`).closest("div")!)
+    const juanSection = within(screen.getByText(`Make your choice, juan`).closest("div")!)
     const juanRockButton = juanSection.getByText('Rock');
     fireEvent.click(juanRockButton);
 
-    expect(screen.getByText('teo chose: Rock')).toBeInTheDocument();
-    expect(screen.getByText('juan chose: Rock')).toBeInTheDocument();
+    expect(screen.getByText('teo chose:').textContent).toBe("teo chose: Rock");
+    expect(screen.getByText('juan chose:').textContent).toBe("juan chose: Rock");
     const getResultButton = screen.getByText('Get result');
     fireEvent.click(getResultButton);
 
@@ -55,15 +55,15 @@ describe('Game Component', () => {
   });
 
   it('updates the score after each round', () => {
-    const teoSection = within(screen.getByText(`Make your choice teo`).closest("div")!)
+    const teoSection = within(screen.getByText(`Make your choice, teo`).closest("div")!)
     const teoSpockButton = teoSection.getByText('Spock');
     fireEvent.click(teoSpockButton);
-    const juanSection = within(screen.getByText(`Make your choice juan`).closest("div")!)
+    const juanSection = within(screen.getByText(`Make your choice, juan`).closest("div")!)
     const juanRockButton = juanSection.getByText('Rock');
     fireEvent.click(juanRockButton);
 
-    expect(screen.getByText('teo chose: Spock')).toBeInTheDocument();
-    expect(screen.getByText('juan chose: Rock')).toBeInTheDocument();
+    expect(screen.getByText('teo chose:').textContent).toBe("teo chose: Spock");
+    expect(screen.getByText('juan chose:').textContent).toBe("juan chose: Rock");
 
     const getResultButton = screen.getByText('Get result');
     fireEvent.click(getResultButton);

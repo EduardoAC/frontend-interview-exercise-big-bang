@@ -13,6 +13,7 @@ export function Scoreboard() {
           <div
             key={name}
             className="w-full max-w-md px-4 py-3 rounded-lg bg-gray-500 text-gray-200 flex justify-between items-center"
+            data-testid={`score-${name}`}
           >
             <span className="text-lg font-medium">{name}</span>
             <span className="text-lg font-semibold text-gray-100">{score}</span>

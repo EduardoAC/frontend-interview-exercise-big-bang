@@ -8,7 +8,6 @@ import { useScores } from './context/ScoreContext';
 function App() {
   const { scoreboard, addPlayer, isNewGame, createNewGame, numberOfPlayers } = useScores();
 
-  console.log(isNewGame)
   return (
     <div className="App container mx-auto p-4">
       <div className="flex justify-center mb-6">
