@@ -1,77 +1,76 @@
-import { screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, MockInstance, beforeEach } from 'vitest';
+import { screen, fireEvent, within } from '@testing-library/react';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Game } from './Game';
 import { renderWithScore } from '../../utils/renderWithScore';
 
 describe('Game Component', () => {
   beforeEach(() => {
     sessionStorage.clear(); // Clear sessionStorage before each test
-  });
-  it('renders all choice buttons', () => {
+    const scoreboard = {'teo': 0, 'juan': 0}
+    sessionStorage.setItem('scoreboard', JSON.stringify(scoreboard));
     renderWithScore(<Game />);
+  });
+
+  it.each(['teo', 'juan'])('renders all choice buttons', (playerUsername) => {
     const choices = ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'];
+    const section = within(screen.getByText(`Make your choice ${playerUsername}`).closest("div")!)
     choices.forEach((choice) => {
-      expect(screen.getByText(choice)).toBeInTheDocument();
+      expect(section.getByText(choice)).toBeInTheDocument();
     });
   });
 
   it('displays the result after player and computer make choices', () => {
-    const rockMock = vi.spyOn(Math, 'random').mockReturnValue(0.1); // Mock computer choice to always be 'Rock'
+    const teoSection = within(screen.getByText(`Make your choice teo`).closest("div")!)
+    const teoScissorsButton = teoSection.getByText('Scissors');
+    fireEvent.click(teoScissorsButton);
+    const juanSection = within(screen.getByText(`Make your choice juan`).closest("div")!)
+    const juanRockButton = juanSection.getByText('Rock');
+    fireEvent.click(juanRockButton);
 
-    renderWithScore(<Game />); // We want to mock before we trigger the game so we need to render here.
-    const scissorsButton = screen.getByText('Scissors');
-    fireEvent.click(scissorsButton);
+    expect(screen.getByText('teo chose: Scissors')).toBeInTheDocument();
+    expect(screen.getByText('juan chose: Rock')).toBeInTheDocument();
 
-    expect(screen.getByText('You chose: Scissors')).toBeInTheDocument();
-    expect(screen.getByText('Computer chose: Rock')).toBeInTheDocument();
-    expect(screen.getByText('Computer wins!')).toBeInTheDocument();
+    const getResultButton = screen.getByText('Get result');
+    fireEvent.click(getResultButton);
 
-    (rockMock as MockInstance).mockRestore();
+    expect(screen.getByText('juan wins!')).toBeInTheDocument();
+
   });
 
   it('displays a tie if both player and computer choose the same', () => {
-    const rockMock = vi.spyOn(Math, 'random').mockReturnValue(0); // Mock computer choice to always be 'Rock'
+    const teoSection = within(screen.getByText(`Make your choice teo`).closest("div")!)
+    const teoRockButton = teoSection.getByText('Rock');
+    fireEvent.click(teoRockButton);
+    const juanSection = within(screen.getByText(`Make your choice juan`).closest("div")!)
+    const juanRockButton = juanSection.getByText('Rock');
+    fireEvent.click(juanRockButton);
 
-    renderWithScore(<Game />);
-    const rockButton = screen.getByText('Rock');
-    fireEvent.click(rockButton);
+    expect(screen.getByText('teo chose: Rock')).toBeInTheDocument();
+    expect(screen.getByText('juan chose: Rock')).toBeInTheDocument();
+    const getResultButton = screen.getByText('Get result');
+    fireEvent.click(getResultButton);
 
-    expect(screen.getByText('You chose: Rock')).toBeInTheDocument();
-    expect(screen.getByText('Computer chose: Rock')).toBeInTheDocument();
     expect(screen.getByText("It's a tie!")).toBeInTheDocument();
 
-    (rockMock as MockInstance).mockRestore();
   });
 
   it('updates the score after each round', () => {
-    const rockMock = vi.spyOn(Math, 'random').mockReturnValue(0); // Mock computer choice to always be 'Rock'
+    const teoSection = within(screen.getByText(`Make your choice teo`).closest("div")!)
+    const teoSpockButton = teoSection.getByText('Spock');
+    fireEvent.click(teoSpockButton);
+    const juanSection = within(screen.getByText(`Make your choice juan`).closest("div")!)
+    const juanRockButton = juanSection.getByText('Rock');
+    fireEvent.click(juanRockButton);
 
-    expect(sessionStorage.getItem('playerScore')).toBe(null);
-    expect(sessionStorage.getItem('computerScore')).toBe(null);
-    
-    renderWithScore(<Game />);
+    expect(screen.getByText('teo chose: Spock')).toBeInTheDocument();
+    expect(screen.getByText('juan chose: Rock')).toBeInTheDocument();
 
-    // Player wins
-    const spockButton = screen.getByText('Spock');
-    fireEvent.click(spockButton);
+    const getResultButton = screen.getByText('Get result');
+    fireEvent.click(getResultButton);
 
-    expect(screen.getByText('You chose: Spock')).toBeInTheDocument();
-    expect(screen.getByText('Computer chose: Rock')).toBeInTheDocument();
-    expect(screen.getByText("Player wins!")).toBeInTheDocument();
+    expect(screen.getByText("teo wins!")).toBeInTheDocument();
 
-    expect(sessionStorage.getItem('playerScore')).toBe("1");
-    expect(sessionStorage.getItem('computerScore')).toBe("0");
-
-    // Computer wins next round
-    const scissorsButton = screen.getByText('Scissors');
-    fireEvent.click(scissorsButton);
-    expect(screen.getByText('You chose: Scissors')).toBeInTheDocument();
-    expect(screen.getByText('Computer chose: Rock')).toBeInTheDocument();
-    expect(screen.getByText("Computer wins!")).toBeInTheDocument();
-
-    expect(sessionStorage.getItem('playerScore')).toBe("1");
-    expect(sessionStorage.getItem('computerScore')).toBe("1");
-  
-    (rockMock as MockInstance).mockRestore();
+    const updatedScored = {'teo': 1, 'juan': 0}
+    expect(sessionStorage.getItem('scoreboard')).toBe(JSON.stringify(updatedScored));
   })
 });

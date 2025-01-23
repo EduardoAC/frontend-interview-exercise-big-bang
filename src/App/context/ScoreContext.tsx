@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+type Scoreboard = Record<string, number>
+
 // Define a type for the score context
 interface ScoreContextType {
-  playerScore: number;
-  computerScore: number;
-  setPlayerScore: (score: number) => void;
-  setComputerScore: (score: number) => void;
+  scoreboard: Scoreboard;
+  addPlayer: (name: string) => void;
+  incrementScore: (player: string) => void;
+  resetScore: () => void;
 }
 
 // Create the context with default values
@@ -13,22 +15,40 @@ const ScoreContext = createContext<ScoreContextType | undefined>(undefined);
 
 // Provider component to wrap around the app
 export const ScoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [playerScore, setPlayerScore] = useState<number>(parseInt(sessionStorage.getItem('playerScore') || '0', 10));
-  const [computerScore, setComputerScore] = useState<number>(parseInt(sessionStorage.getItem('computerScore') || '0', 10));
+  const [scoreboard, updateScoreboard] = useState<Scoreboard>(JSON.parse(sessionStorage.getItem('scoreboard') || "{}") as Scoreboard);
 
   // Save the scores in sessionStorage
   const saveScoresToSessionStorage = () => {
-    sessionStorage.setItem('playerScore', playerScore.toString());
-    sessionStorage.setItem('computerScore', computerScore.toString());
+    sessionStorage.setItem('scoreboard', JSON.stringify(scoreboard));
   };
+
+  const addPlayer = (name: string) => {
+    updateScoreboard({...scoreboard, [name]: 0 })
+  }
+
+  const incrementScore = (playerName: string) => {
+    const currentScore = scoreboard[playerName]
+    if(typeof currentScore === "number") {
+      const newScoreboard = { ...scoreboard, [playerName]: currentScore + 1 }
+      updateScoreboard(newScoreboard)
+    }
+  }
+
+  const resetScore = () => {
+    const resetedScore = Object.keys(scoreboard).reduce(( acc: Scoreboard, name) => {
+      acc[name] = 0;
+      return acc;
+    }, {});
+    updateScoreboard(resetedScore);
+  }
 
   // Sync the state to sessionStorage whenever scores change
   React.useEffect(() => {
     saveScoresToSessionStorage();
-  }, [playerScore, computerScore]);
+  }, [scoreboard]);
 
   return (
-    <ScoreContext.Provider value={{ playerScore, computerScore, setPlayerScore, setComputerScore }}>
+    <ScoreContext.Provider value={{ scoreboard, addPlayer, incrementScore, resetScore }}>
       {children}
     </ScoreContext.Provider>
   );

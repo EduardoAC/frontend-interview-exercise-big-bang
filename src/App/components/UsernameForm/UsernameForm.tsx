@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
 interface UsernameFormProps {
-  setUsername: (username: string) => void;
+  onSubmit: (username: string) => void;
 }
 
-export function UsernameForm({ setUsername }: UsernameFormProps) {
+export function UsernameForm({ onSubmit }: UsernameFormProps) {
   const [name, setName] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name) setUsername(name);
+    if (name) onSubmit(name);
   };
 
   return (

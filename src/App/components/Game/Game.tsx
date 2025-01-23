@@ -1,41 +1,53 @@
-import { useState } from 'react';
-import { Choice, getRandomChoice, determineWinner } from '../../utils/gamelogic';
+import { useEffect, useState } from 'react';
+import { determineWinner } from '../../utils/gamelogic';
 import { useScores } from '../../context/ScoreContext';
+import { Choice } from '../../types/game.types';
 
 export function Game() {
-  const [playerChoice, setPlayerChoice] = useState<Choice | null>(null);
-  const [computerChoice, setComputerChoice] = useState<Choice | null>(null);
+  const [playersChoice, setPlayersChoice] = useState<Record<string, Choice>>({});
   const [result, setResult] = useState<string | null>(null);
-  const { playerScore, computerScore, setPlayerScore, setComputerScore } = useScores();
+  const { scoreboard, incrementScore } = useScores();
 
-  const handleChoice = (choice: Choice) => {
-    const computer = getRandomChoice();
-    setPlayerChoice(choice);
-    setComputerChoice(computer);
-    const ganeOutcome = determineWinner(choice, computer);
-    setResult(ganeOutcome);
-    if(ganeOutcome === 'Computer') {
-      setComputerScore(computerScore + 1);
-    } else if (ganeOutcome === "Player") {
-      setPlayerScore(playerScore + 1);
-    }
+  const handleChoice = (playerName: string, choice: Choice) => {
+    setPlayersChoice({ ...playersChoice, [playerName]: choice });
   };
+  const handleNewRound = () => {
+    const numberOfPlayers = Object.keys(scoreboard).length;
+    const numberOfChoicesDone = Object.keys(playersChoice).length
+    if (numberOfPlayers === numberOfChoicesDone) {
+      const winnerName = determineWinner(playersChoice);
+      setResult(winnerName);
+      if (winnerName) {
+        incrementScore(winnerName);
+      }
+    }
+    setPlayersChoice({})
+  }
+
+  useEffect(() => {
+
+  }, [scoreboard, playersChoice])
 
   return (
     <div className="Game">
       <h2>Choose your weapon:</h2>
-      {['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'].map((choice) => (
-        <button key={choice} onClick={() => handleChoice(choice as Choice)}>
-          {choice}
-        </button>
-      ))}
-      {result && (
-        <div>
-          <p>You chose: {playerChoice}</p>
-          <p>Computer chose: {computerChoice}</p>
-          <h3>{result === 'Tie' ? 'It\'s a tie!' : `${result} wins!`}</h3>
-        </div>
-      )}
+      <div>
+        {Object.keys(scoreboard).map((name) => (
+          <div key={`choice-${name}`} id={name}>
+            <p>Make your choice {name}</p>
+            {['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'].map((choice) => (
+              <button key={choice} onClick={() => handleChoice(name, choice as Choice)} disabled={typeof playersChoice[name] !== "undefined"}>
+                {choice}
+              </button>
+            ))}
+            <p>{name} chose: {playersChoice[name]}</p>
+          </div>
+        ))}
+      </div>
+      <div>
+        <button onClick={handleNewRound}>Get result</button>
+        <h3>{result === null ? 'It\'s a tie!' : `${result} wins!`}</h3>
+      </div>
     </div>
   );
 };
