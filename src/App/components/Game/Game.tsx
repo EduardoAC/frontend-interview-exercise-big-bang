@@ -1,16 +1,24 @@
 import { useState } from 'react';
 import { Choice, getRandomChoice, determineWinner } from '../../utils/gamelogic';
+import { useScores } from '../../context/ScoreContext';
 
 export function Game() {
   const [playerChoice, setPlayerChoice] = useState<Choice | null>(null);
   const [computerChoice, setComputerChoice] = useState<Choice | null>(null);
   const [result, setResult] = useState<string | null>(null);
+  const { playerScore, computerScore, setPlayerScore, setComputerScore } = useScores();
 
   const handleChoice = (choice: Choice) => {
     const computer = getRandomChoice();
     setPlayerChoice(choice);
     setComputerChoice(computer);
-    setResult(determineWinner(choice, computer));
+    const ganeOutcome = determineWinner(choice, computer);
+    setResult(ganeOutcome);
+    if(ganeOutcome === 'Computer') {
+      setComputerScore(computerScore + 1);
+    } else if (ganeOutcome === "Player") {
+      setPlayerScore(playerScore + 1);
+    }
   };
 
   return (

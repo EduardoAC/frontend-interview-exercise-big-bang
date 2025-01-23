@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import automataLogo from '../assets/automata.png'
 import './App.css'
-import { UsernameForm } from '../components/UsernameForm';
-import { Scoreboard } from '../components/Scoreboard';
-import { Game } from '../components/Game';
+import { UsernameForm } from './components/UsernameForm';
+import { Scoreboard } from './components/Scoreboard';
+import { Game } from './components/Game';
+import { ScoreProvider } from './context/ScoreContext';
 
 function App() {
   const [username, setUsername] = useState<string | null>(null);
   return (
-    <>
+    <ScoreProvider>
       <div>
         <a href="https://automata.tech/" target="_blank" rel="noreferrer">
           <img src={String(automataLogo)} className="logo automata" alt="Automata logo" />
@@ -27,7 +28,7 @@ function App() {
           </>
         )}
       </div>
-    </>
+    </ScoreProvider>
   )
 }
 
