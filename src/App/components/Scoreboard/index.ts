@@ -1,1 +1,1 @@
-export { Scoreboard } from './Scoreboard';
+export { Scoreboard } from "./Scoreboard";

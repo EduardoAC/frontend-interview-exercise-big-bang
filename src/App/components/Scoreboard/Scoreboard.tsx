@@ -1,7 +1,7 @@
-import { useScores } from '../../context/ScoreContext';
+import { useScores } from "../../context/ScoreContext";
 
 export function Scoreboard() {
-  const { scoreboard, resetScore} = useScores();
+  const { scoreboard, resetScore } = useScores();
 
   return (
     <div className="Scoreboard container mx-auto mt-6 p-6 bg-gray-700 rounded-lg shadow-lg text-gray-800">
@@ -30,4 +30,4 @@ export function Scoreboard() {
       </div>
     </div>
   );
-};
+}

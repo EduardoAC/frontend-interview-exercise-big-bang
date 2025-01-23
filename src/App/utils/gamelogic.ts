@@ -1,15 +1,30 @@
 import { Choice, PlayerChoices } from "../types/game.types";
 
 export const outcomes = {
-  Rock: { winsAgainst: ['Scissors', 'Lizard'], reason: 'Crushes Scissors, Crushes Lizard' },
-  Paper: { winsAgainst: ['Rock', 'Spock'], reason: 'Covers Rock, Disproves Spock' },
-  Scissors: { winsAgainst: ['Paper', 'Lizard'], reason: 'Cuts Paper, Decapitates Lizard' },
-  Lizard: { winsAgainst: ['Paper', 'Spock'], reason: 'Eats Paper, Poisons Spock' },
-  Spock: { winsAgainst: ['Scissors', 'Rock'], reason: 'Smashes Scissors, Vaporizes Rock' },
+  Rock: {
+    winsAgainst: ["Scissors", "Lizard"],
+    reason: "Crushes Scissors, Crushes Lizard",
+  },
+  Paper: {
+    winsAgainst: ["Rock", "Spock"],
+    reason: "Covers Rock, Disproves Spock",
+  },
+  Scissors: {
+    winsAgainst: ["Paper", "Lizard"],
+    reason: "Cuts Paper, Decapitates Lizard",
+  },
+  Lizard: {
+    winsAgainst: ["Paper", "Spock"],
+    reason: "Eats Paper, Poisons Spock",
+  },
+  Spock: {
+    winsAgainst: ["Scissors", "Rock"],
+    reason: "Smashes Scissors, Vaporizes Rock",
+  },
 };
 
 export function getRandomChoice(): Choice {
-  const choices: Choice[] = ['Rock', 'Paper', 'Scissors', 'Lizard', 'Spock'];
+  const choices: Choice[] = ["Rock", "Paper", "Scissors", "Lizard", "Spock"];
   return choices[Math.floor(Math.random() * choices.length)];
 }
 

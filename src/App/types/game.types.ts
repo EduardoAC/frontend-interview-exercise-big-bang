@@ -1,2 +1,2 @@
-export type Choice = 'Rock' | 'Paper' | 'Scissors' | 'Lizard' | 'Spock';
-export type PlayerChoices = Record<string, Choice>
+export type Choice = "Rock" | "Paper" | "Scissors" | "Lizard" | "Spock";
+export type PlayerChoices = Record<string, Choice>;
