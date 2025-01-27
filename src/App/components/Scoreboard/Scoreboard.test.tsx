@@ -8,7 +8,7 @@ describe("Scoreboard Component", () => {
     sessionStorage.clear(); // Clear sessionStorage before each test
   });
 
-  it.only("displays initial scores as 0", () => {
+  it("displays initial scores as 0", () => {
     const scoreboard = { teo: 0, juan: 0 };
     sessionStorage.setItem("scoreboard", JSON.stringify(scoreboard));
     renderWithScore(<Scoreboard />);
